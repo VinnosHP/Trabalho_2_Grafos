@@ -1,7 +1,6 @@
 package GrafoNaoDirigido.Menus;
 
 import GrafoNaoDirigido.GrafoND;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,7 +10,7 @@ public class MenuRemoveV extends JFrame {
     
     public MenuRemoveV(GrafoND grafo){
         setTitle("Remove Vertice");
-        setSize(250, 150);
+        setSize(300, 100);
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
