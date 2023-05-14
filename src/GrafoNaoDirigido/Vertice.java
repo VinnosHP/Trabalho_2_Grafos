@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Vertice {
     private String dado;
-    private ArrayList<Aresta> arestas;
+    private final ArrayList<Aresta> arestas;
 
     public Vertice(String dado){
         this.dado = dado;
@@ -47,8 +47,8 @@ public class Vertice {
     }
     public void mostrarArestas(){
         if (arestas.size() != 0) {
-            for (int i = 0; i < arestas.size(); i++) {
-                System.out.println(" " + arestas.get(i).getId());
+            for (Aresta aresta : arestas) {
+                System.out.println(" " + aresta.getId());
             }
         }else System.out.println("O Vertice " + dado + " não possui arestas!");
     }

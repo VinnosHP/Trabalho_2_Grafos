@@ -43,7 +43,7 @@ public class MenuD extends JFrame {
         botaoPRIM.setBackground(new Color(0xFFFFFF));
 
         //Lado Direito
-        JButton botaoAA = new JButton("Adicionar Aresta");
+        JButton botaoAA = new JButton("Adicionar Arco");
         botaoAA.setBounds(400, 100, 300, 50);
         botaoAA.setFont(new Font("Arial", Font.BOLD, 21));
         botaoAA.setForeground(new Color(0x1C1C87));
@@ -51,7 +51,7 @@ public class MenuD extends JFrame {
         botaoAA.addActionListener(e -> {
 
         });
-        JButton botaoRA = new JButton("Remover Aresta");
+        JButton botaoRA = new JButton("Remover Arco");
         botaoRA.setBounds(400, 150, 300, 50);
         botaoRA.setFont(new Font("Arial", Font.BOLD, 21));
         botaoRA.setForeground(new Color(0x1C1C87));

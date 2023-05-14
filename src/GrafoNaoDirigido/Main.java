@@ -1,10 +1,6 @@
 package GrafoNaoDirigido;
 
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.UndirectedSparseGraph;
-
 import javax.swing.*;
-import java.awt.*;
 import java.util.Objects;
 import java.util.Scanner;
 import java.io.IOException;
@@ -227,7 +223,7 @@ public class Main extends JFrame{
                 case 6 -> buscaP(grafoNO);          // tem que testar para ver se ta funcionando
                 case 7 -> algoritmoP(grafoNO);      // tem que testar para ver se ta funcionando
                 case 8 -> mostra(grafoNO);
-                case 9 -> grafoNO.visualizacao(); // comenta aqui para não aparecer o grafo
+                case 9 -> grafoNO.visualizacao();   // comenta aqui para não aparecer o grafo
                 default -> System.out.println("Opção inválida!");
             }
             System.in.read();
