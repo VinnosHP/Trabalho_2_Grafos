@@ -89,7 +89,7 @@ public class Main {
             System.out.print("Vertice Inicial: ");
             vertice = input.nextLine();
         }while (Objects.equals(vertice, ""));
-        grafo.AGM(vertice);
+        //grafo.AGM(vertice);
     }
     public static void algoritmoR(){ System.out.print("Nada aqui"); }
 

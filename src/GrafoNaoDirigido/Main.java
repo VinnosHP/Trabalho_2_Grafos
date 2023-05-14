@@ -138,12 +138,17 @@ public class Main extends JFrame{
     public static void removerV(GrafoND grafoNO){
         Scanner input = new Scanner(System.in);
         String vertice;
+        boolean existe;
         do {
             System.out.print("Vertice: ");
             vertice = input.nextLine();
-        }while(Objects.equals(vertice, ""));
+            if (!grafoNO.existeVertice(vertice)) {
+                System.out.println("Vertice não existe!");
+                existe = false;
+            }else existe = true;
+        }while (Objects.equals(vertice, "") && !existe);
         grafoNO.removeVertice(vertice);
-        System.out.println("Vertice Removido!");
+        System.out.println("Vertice removido!");
     }
     public static void removerA(GrafoND grafoNO){
         Scanner input = new Scanner(System.in);

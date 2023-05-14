@@ -31,12 +31,19 @@ public class GrafoND{
 
     public void removeVertice(String dado){
         for(int i=0; i < vertices.size(); i++){
-            if(Objects.equals(vertices.get(i).getDado(), dado)){ // Procura o vertice no array
+            if(Objects.equals(vertices.get(i).getDado(), dado)){
                 for (int j=0; j < vertices.get(i).getArestas().size(); j++){
                     vertices.get(i).removeAresta(vertices.get(i).getArestas().get(0).getId());
                 }
                 vertices.remove(i);
                 break;
+            }
+        }
+        for (Vertice vertex : vertices) {
+            for (int j = 0; j < vertex.getArestas().size(); j++) {
+                if (Objects.equals(vertex.getArestas().get(j).getA(), dado) || Objects.equals(vertex.getArestas().get(j).getB(), dado)){
+                    vertex.removeAresta(vertex.getArestas().get(j).getId());
+                }
             }
         }
     }
