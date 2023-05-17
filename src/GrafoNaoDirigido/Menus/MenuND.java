@@ -78,6 +78,7 @@ public class MenuND extends JFrame {
         //botaoVisualGrafo.setForeground(new Color(0x1C1C87));
         //botaoVisualGrafo.setBackground(new Color(0xFFFFFF));
         botaoVisualGrafo.addActionListener(e -> {
+            grafo.mostra();
             grafo.visualizacao();
         });
 
