@@ -1,5 +1,6 @@
 package GrafoNaoDirigido;
 
+import GrafoNaoDirigido.ClassesVisualizacaoGrafo.*;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
@@ -17,33 +18,28 @@ public class GrafoND{
     private final ArrayList<Vertice> vertices;
     private final ArrayList<Aresta> arestas;
     private final ArrayList<String> marcados;
+    private final ArrayList<VerticeH> h;
 
     public GrafoND(){
         this.vertices = new ArrayList<>();
         this.arestas = new ArrayList<>();
         this.marcados = new ArrayList<>();
+        this.h = new ArrayList<>();
     }
 
     public void adicionaVertice(String dado){
         Vertice novoV = new Vertice(dado);
-        this.vertices.add(novoV);
+        vertices.add(novoV);
     }
 
     public void removeVertice(String dado){
         for(int i=0; i < vertices.size(); i++){
-            if(Objects.equals(vertices.get(i).getDado(), dado)){
+            if(Objects.equals(vertices.get(i).getDado(), dado)){ // Procura o vertice no array
                 for (int j=0; j < vertices.get(i).getArestas().size(); j++){
                     vertices.get(i).removeAresta(vertices.get(i).getArestas().get(0).getId());
                 }
                 vertices.remove(i);
                 break;
-            }
-        }
-        for (Vertice vertex : vertices) {
-            for (int j = 0; j < vertex.getArestas().size(); j++) {
-                if (Objects.equals(vertex.getArestas().get(j).getA(), dado) || Objects.equals(vertex.getArestas().get(j).getB(), dado)){
-                    vertex.removeAresta(vertex.getArestas().get(j).getId());
-                }
             }
         }
     }
@@ -230,6 +226,124 @@ public class GrafoND{
         return arestasUsadas;
     }*/
 
+    public boolean temCicloTres(){
+        for (Vertice vertex : vertices) {
+            for (int j = 0; j < vertex.getArestas().size(); j++) {
+                int p = getVerticePosition(vertex.getArestas().get(j).getB());
+                String proximo = vertex.getArestas().get(j).getB(); // Pega o proximo
+                if (proximo.equals(vertex.getDado())) { // Caso o getB retorne o proprio vertice ele pega o getA, que seria o vizinho
+                    proximo = vertex.getArestas().get(j).getA();
+                    p = getVerticePosition(vertex.getArestas().get(j).getB());
+                }
+                for (int k = 0; k < vertices.get(p).getArestas().size(); k++) {
+                    int x = getVerticePosition(vertices.get(p).getArestas().get(k).getB());
+                    proximo = vertices.get(p).getArestas().get(k).getB(); // Pega o proximo
+                    if (proximo.equals(vertices.get(p).getDado())) { // Caso o getB retorne o proprio vertice ele pega o getA, que seria o vizinho
+                        proximo = vertices.get(p).getArestas().get(k).getA();
+                        x = getVerticePosition(vertices.get(p).getArestas().get(k).getB());
+                    }
+                    for (int l = 0; l < vertices.get(x).getArestas().size(); l++) {
+                        if (vertices.get(x).getArestas().get(l).getId().equals(vertex.getDado()))
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public boolean ehPlanar(){
+        if(vertices.size()>=3){
+            if(!temCicloTres()){
+                return arestas.size() <= (2 * vertices.size()) - 4;
+            }else{
+                return arestas.size() <= (3 * vertices.size()) - 6;
+            }
+        }
+        return true;
+    }
+
+    public ArrayList<Vertice> ordenaGrau(){
+        ArrayList<Vertice> listaOrdenada = vertices;
+        boolean trocou = false;
+        do {
+            for(int i=0; i< listaOrdenada.size()-1; i++){
+                if(listaOrdenada.get(i).getArestas().size() < listaOrdenada.get(i+1).getArestas().size()){
+                    Vertice aux = listaOrdenada.get(i);
+                    listaOrdenada.set(i, listaOrdenada.get(i+1)) ;
+                    listaOrdenada.set(i+1,aux);
+                    trocou = true;
+                }
+            }
+        }while(trocou);
+        return listaOrdenada;
+    }
+    public boolean adjCor(ArrayList<Vertice> v, Vertice vi, int cor){
+        //ArrayList<Vertice> adjacentes = new ArrayList<>();
+        for (Vertice vertice : v) { // Varre todos os itens da lista de ja coloridos
+            if (vertice.getCor() == cor) { // Se a cor do vertice i é igual a cor da rodada
+                for (int j = 0; j < vertice.getArestas().size(); j++) { // varre todos os adjacentes de vertice i
+                    String adj = vertice.getArestas().get(j).getB();
+                    if (Objects.equals(adj, vertice.getDado())) {
+                        adj = vertice.getArestas().get(j).getA();
+                    }
+                    int k = getVerticePosition(adj);
+                    if (vertices.get(k) == vi)
+                        return true; // Se nos adjacentes tiver o Vertice atual do welshPowell, o vertice eh adjacente a um vertice da msm cor
+                }
+            }
+        }
+        return false;
+    }
+    public ArrayList<Vertice> WelshPowell(){
+        ArrayList<Vertice> verticeCor = new ArrayList<>(); // lista q vai retornar os vertices coloridos
+        ArrayList<Vertice> listaOrdenada = ordenaGrau(); // lista ordenada por grau de adjacencia
+        int cor = 0; // cores sao int pra ser mais facil de atribuir e comparar
+        while(verticeCor.size() < listaOrdenada.size()){ // Faz o loop ate todos os vertices estarem coloridos
+            cor++; // passa a cor
+            for (Vertice vertice : listaOrdenada) { // varre todos os vertices
+                if (vertice.getCor() == -1 && !adjCor(verticeCor, vertice, cor)) { // se ele nao tiver cor e nao for adjacente de nenhum vertice com a cor da rodada
+                    vertice.setCor(cor); // colore o vertice
+                    verticeCor.add(vertice);
+                }
+            }
+        }
+        return verticeCor;
+    }
+
+    public void calculaH(String destino){
+        int indexDestino = getVerticePosition(destino);
+        for (Vertice vertex : vertices) {
+            double distanciaH = (Math.abs(vertex.getX() - vertices.get(indexDestino).getX()) + Math.abs(vertex.getY() - vertices.get(indexDestino).getY()));
+            h.add(new VerticeH(vertex.getDado(), distanciaH));
+        }
+    }
+    /*
+    public Vertice obtemMelhorNodo(ArrayList<Vertice> op){
+        Vertice melhor;
+        for(int i=0; i<op.size();i++){
+            for(int j=0; j<h.size();j++){
+                if(op.get(i).getDado() == h.get(j).getDado()){
+
+                }
+            }
+        }
+        return melhor;
+    }
+
+    public ArrayList<Vertice> aStar(String inicio, String destino){
+            h.clear();
+            calculaH(destino);
+            ArrayList<Vertice> opcoes = new ArrayList<>();
+            ArrayList<Vertice> caminho = new ArrayList<>();
+            String atual = inicio;
+            do {
+                caminho.add(obtemMelhorNodo(opcoes));
+                if(obtemMelhorNodo(opcoes).getDado == destino)
+                    return caminho;
+
+            }while();
+    }
+    */
     public void mostra(){
         for (Vertice vertex : vertices) {
             if (!vertex.getArestas().isEmpty()) {
@@ -244,9 +358,9 @@ public class GrafoND{
             } else {
                 System.out.print("Vertice " + vertex.getDado() + " eh isolado\n");
             }
+            System.out.println("Vertice " + vertex.getDado() + " tem a cor " + vertex.getCor());
         }
     }
-
     public Graph<String, String> criaGrafo(){
         Graph<String, String> grafo = new UndirectedSparseGraph<>();
         if (vertices.size() == 0)
@@ -267,7 +381,6 @@ public class GrafoND{
         }
         return grafo;
     }
-
     public void visualizacao(){
         try {
             Graph<String, String> grafo = criaGrafo();

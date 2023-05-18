@@ -1,4 +1,4 @@
-package GrafoNaoDirigido;
+package GrafoNaoDirigido.ClassesVisualizacaoGrafo;
 
 import org.apache.commons.collections15.Transformer;
 
