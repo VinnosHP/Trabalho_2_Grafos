@@ -1,6 +1,7 @@
 package GrafoNaoDirigido;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 import java.io.IOException;
@@ -97,11 +98,13 @@ public class Main extends JFrame{
         System.out.println("|  2 - Adicionar Aresta      |");
         System.out.println("|  3 - Remover Vertice       |");
         System.out.println("|  4 - Remover Aresta        |");
-        System.out.println("|  5 - Busca em Largura      |");
+       /* System.out.println("|  5 - Busca em Largura      |");
         System.out.println("|  6 - Busca em Profundidade |");
-        System.out.println("|  7 - Algoritmo de PRIM     |");
-        System.out.println("|  8 - Mostra                |");
-        System.out.println("|  9 - Cria Grafo            |");
+        System.out.println("|  7 - Algoritmo de PRIM     |");*/
+        System.out.println("|  5 - Mostra                |");
+        System.out.println("|  6 - Cria Grafo            |");
+        System.out.println("|  7 - PLanar                |");
+        System.out.println("|  8 - Welsh Powell          |");
         System.out.println("| -1 - Sair                  |");
         System.out.println("|----------------------------|");
         System.out.print(" Opção: ");
@@ -176,7 +179,7 @@ public class Main extends JFrame{
             }else System.out.println("Vertice " + verticeB + " não existe!");
         }else System.out.println("Vertice " + verticeA + " não existe!");
     }
-    public static void buscaL(GrafoND grafoNO){
+    /*public static void buscaL(GrafoND grafoNO){
         Scanner input = new Scanner(System.in);
         String vertice;
         do {
@@ -203,11 +206,21 @@ public class Main extends JFrame{
             vertice = input.nextLine();
         }while(Objects.equals(vertice, ""));
         //grafoNO.AGM(vertice);
-    }
+    }*/
     public static void mostra(GrafoND grafoND){
         if (grafoND.existeVerticeG())
             grafoND.mostra();
         else System.out.println("O Grafo não possui vertices!");
+    }
+    public static void planar(GrafoND grafoND){
+        boolean planar = grafoND.ehPlanar();
+        if (planar) System.out.println("Grafo eh planar!");
+        else System.out.println("Grafo não eh planar!");
+    }
+    public static void wp(GrafoND grafoND){
+        ArrayList<Vertice> lista = grafoND.WelshPowell();
+        System.out.println("wp main");
+        grafoND.mostra();
     }
 
     public static void main(String[] args) throws IOException {
@@ -224,11 +237,13 @@ public class Main extends JFrame{
                 case 2 -> adicionarA(grafoNO);
                 case 3 -> removerV(grafoNO);
                 case 4 -> removerA(grafoNO);
-                case 5 -> buscaL(grafoNO);          // tem que testar para ver se ta funcionando
+                /*case 5 -> buscaL(grafoNO);          // tem que testar para ver se ta funcionando
                 case 6 -> buscaP(grafoNO);          // tem que testar para ver se ta funcionando
-                case 7 -> algoritmoP(grafoNO);      // tem que testar para ver se ta funcionando
-                case 8 -> mostra(grafoNO);
-                case 9 -> grafoNO.visualizacao();   // comenta aqui para não aparecer o grafo
+                case 7 -> algoritmoP(grafoNO);      // tem que testar para ver se ta funcionando*/
+                case 5 -> mostra(grafoNO);
+                case 6 -> grafoNO.visualizacao();   // comenta aqui para não aparecer o grafo
+                case 7 -> planar(grafoNO);
+                case 8 -> wp(grafoNO);
                 default -> System.out.println("Opção inválida!");
             }
             System.in.read();
