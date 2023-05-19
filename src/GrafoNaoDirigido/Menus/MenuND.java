@@ -6,6 +6,8 @@ import GrafoNaoDirigido.Vertice;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class MenuND extends JFrame {
     public MenuND(GrafoND grafo){
@@ -43,7 +45,29 @@ public class MenuND extends JFrame {
         botaoAE.setBounds(75,200,300,50);
         botaoAE.setFont(new Font("Arial", Font.BOLD, 21));
         botaoAE.addActionListener(e -> {
-            new TelaAE(grafo);
+            if (e.getSource() == botaoAE) {
+                JOptionPane.showMessageDialog(null, "Olhar no console!");
+                Scanner input = new Scanner(System.in);
+                String inicio, destino;
+                do {
+                    System.out.print("Vertice destino: ");
+                    destino = input.nextLine();
+                    System.out.print("Vertice inicio: ");
+                    inicio = input.nextLine();
+                }while(Objects.equals(destino, "") || Objects.equals(inicio, ""));
+                boolean existeD = grafo.existeVertice(destino);
+                boolean existeI = grafo.existeVertice(inicio);
+                if (existeD){
+                    if (existeI){
+                        ArrayList<Vertice> caminho = grafo.aStar(inicio, destino);
+                        for (int i = 0; i < caminho.size(); i++) {
+                            if (i+1 < caminho.size()) System.out.print(caminho.get(i).getDado() + " -> ");
+                            else System.out.print(caminho.get(i).getDado());
+                        }
+                        //System.out.print("\n Custo: " + grafo.precoAteAqui(caminho) + "\n");
+                    }else System.out.println("Vertice " + inicio + " não existe!");
+                }else System.out.println("Vertice " + destino + " não existe!");
+            }
         });
 
         //Lado Direito Tela
@@ -63,19 +87,23 @@ public class MenuND extends JFrame {
         botaoWP.setBounds(375,150,300,50);
         botaoWP.setFont(new Font("Arial", Font.BOLD, 21));
         botaoWP.addActionListener(e -> {
-            //new TelaWP(grafo);
-            ArrayList<Vertice> lista = grafo.WelshPowell();
-            for (Vertice vertice : lista) {
-                System.out.println("Vertice " + vertice.getDado() + " tem a Cor: " + vertice.getCor());
+            if (e.getSource() == botaoWP) {
+                ArrayList<Vertice> lista = grafo.WelshPowell();
+                for (Vertice vertice : lista) {
+                    System.out.println("Vertice " + vertice.getDado() + " tem a Cor: " + vertice.getCor());
+                }
+                JOptionPane.showMessageDialog(null, "Olhar no console!");
             }
-            JOptionPane.showMessageDialog(null,"Olhar no console!");
         });
         JButton botaoVisualGrafo = new JButton("Ver Grafo");
         botaoVisualGrafo.setBounds(375, 200, 300, 50);
         botaoVisualGrafo.setFont(new Font("Arial", Font.BOLD, 21));
         botaoVisualGrafo.addActionListener(e -> {
-            grafo.mostra();
-            grafo.visualizacao();
+            if (e.getSource() == botaoVisualGrafo) {
+                System.out.println("\n");
+                grafo.mostra();
+                grafo.visualizacao();
+            }
         });
 
         JButton botaoIG = new JButton("Inicializa Grafo");

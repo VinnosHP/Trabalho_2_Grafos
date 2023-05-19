@@ -165,23 +165,24 @@ public class Main extends JFrame{
         if (existeD){
             if (existeI){
                 ArrayList<Vertice> caminho = grafo.aStar(inicio, destino);
-                for (Vertice vertice : caminho) {
-                    System.out.print(vertice.getDado() + " -> ");
+                for (int i = 0; i < caminho.size(); i++) {
+                    if (i+1 < caminho.size()) System.out.print(caminho.get(i).getDado() + " -> ");
+                    else System.out.print(caminho.get(i).getDado());
                 }
-                System.out.print("\n Custo: " + grafo.precoAteAqui(caminho) + "\n");
+                //System.out.print("\n Custo: " + grafo.precoAteAqui(caminho) + "\n");
             }else System.out.println("Vertice " + inicio + " não existe!");
         }else System.out.println("Vertice " + destino + " não existe!");
     }
 
     public static void inicializaGQualquer(GrafoND grafo){
-        grafo.adicionaVertice("A",50,50);
-        grafo.adicionaVertice("B",100,50);
-        grafo.adicionaVertice("C",100,100);
-        grafo.adicionaVertice("D",50,100);
+        grafo.adicionaVertice("A",1,1);
+        grafo.adicionaVertice("B",1,1);
+        grafo.adicionaVertice("C",1,1);
+        grafo.adicionaVertice("D",1,1);
 
-        grafo.adicionaAresta("A","B","1",1);
+        grafo.adicionaAresta("A","B","1",2);
         grafo.adicionaAresta("B","C","2",1);
-        grafo.adicionaAresta("C","D","3",1);
+        grafo.adicionaAresta("C","D","3",3);
         grafo.adicionaAresta("D","A","4",1);
     }
     public static void inicializaParana(GrafoND grafo){
