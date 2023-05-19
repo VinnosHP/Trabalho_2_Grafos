@@ -30,6 +30,7 @@ public class Main extends JFrame{
     public static void adicionarV(GrafoND grafoNO){
         Scanner input = new Scanner(System.in);
         String vertice;
+        double x, y;
         boolean existe = false;
         do {
             System.out.print("Vertice: ");
@@ -38,8 +39,12 @@ public class Main extends JFrame{
                 System.out.println("Vertice já existe!");
                 existe = true;
             }
+            System.out.print("X: ");
+            x = input.nextDouble();
+            System.out.print("Y: ");
+            y = input.nextDouble();
         }while(Objects.equals(vertice, "") && existe);
-        grafoNO.adicionaVertice(vertice);
+        grafoNO.adicionaVertice(vertice, x, y);
         System.out.print("Vertice Adicionado!");
     }
     public static void adicionarA(GrafoND grafoNO){
@@ -158,13 +163,11 @@ public class Main extends JFrame{
         boolean existeI = grafo.existeVertice(inicio);
         if (existeD){
             if (existeI){
-                System.out.println("cheguei no aEstrela if");
                 ArrayList<Vertice> caminho = grafo.aStar(inicio, destino);
-                System.out.println("cheguei no for");
                 for (Vertice vertice : caminho) {
                     System.out.print(vertice.getDado() + " -> ");
                 }
-                System.out.print("\n");
+                System.out.print("\n Custo: " + grafo.precoAteAqui(caminho) + "\n");
             }else System.out.println("Vertice " + inicio + " não existe!");
         }else System.out.println("Vertice " + destino + " não existe!");
 
@@ -172,18 +175,18 @@ public class Main extends JFrame{
 
     public static void inicializaParana(GrafoND grafo){
         //Adivionando os Vertices
-        grafo.adicionaVertice("Curitiba");
-        grafo.adicionaVertice("Paranaguá");
-        grafo.adicionaVertice("Ponta Grossa");
-        grafo.adicionaVertice("Guarapuava");
-        grafo.adicionaVertice("Londrina");
-        grafo.adicionaVertice("Maringá");
-        grafo.adicionaVertice("São Mateus do Sul");
-        grafo.adicionaVertice("Umuarama");
-        grafo.adicionaVertice("Francisco Beltrão");
-        grafo.adicionaVertice("Toledo");
-        grafo.adicionaVertice("Cascavel");
-        grafo.adicionaVertice("Foz do Iguaçu");
+        grafo.adicionaVertice("Curitiba",-25.4284,-49.2733);
+        grafo.adicionaVertice("Paranaguá",-25.5205,-48.5095);
+        grafo.adicionaVertice("Ponta Grossa",-25.0945,-50.1633);
+        grafo.adicionaVertice("Guarapuava",-25.3935,-51.4562);
+        grafo.adicionaVertice("Londrina",-23.2927,-51.1732);
+        grafo.adicionaVertice("Maringá",-23.4273,-51.9375);
+        grafo.adicionaVertice("São Mateus do Sul",-25.8767,-50.3842);
+        grafo.adicionaVertice("Umuarama",-23.7641,-53.3184);
+        grafo.adicionaVertice("Francisco Beltrão",-26.0783,-53.0531);
+        grafo.adicionaVertice("Toledo",-24.7199,-53.7433);
+        grafo.adicionaVertice("Cascavel",-24.9555,-53.4552);
+        grafo.adicionaVertice("Foz do Iguaçu",-25.54698,-54.5882);
         //Adicionando as arestas
         grafo.adicionaAresta("Paranaguá",         "Curitiba",         "PC",90);
         grafo.adicionaAresta("Curitiba",          "Ponta Grossa",     "CP",114);

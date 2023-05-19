@@ -27,8 +27,8 @@ public class GrafoND{
         this.distanciaEstimada = new ArrayList<>();
     }
 
-    public void adicionaVertice(String dado){
-        Vertice novoV = new Vertice(dado);
+    public void adicionaVertice(String dado, double x, double y){
+        Vertice novoV = new Vertice(dado,x,y);
         vertices.add(novoV);
     }
     public void removeVertice(String dado){
@@ -297,14 +297,19 @@ public class GrafoND{
         }
     }
 
-    public ArrayList<Vertice> expande(Vertice v){
+    public ArrayList<Vertice> expande(Vertice v, ArrayList<Vertice> c){
         ArrayList<Vertice> adjacentes = new ArrayList<>();
         for(int i=0; i<v.getArestas().size(); i++){
             String adj = v.getArestas().get(i).getB();
-            if(adj == v.getDado()){
+            if(Objects.equals(adj, v.getDado())){
                 adj = v.getArestas().get(i).getA();
             }
             adjacentes.add(vertices.get(getVerticePosition(adj)));
+        }
+        for(int i=0; i<adjacentes.size();i++){
+            if(c.contains(adjacentes.get(i))){
+                adjacentes.remove(i);
+            }
         }
         return adjacentes;
     }
@@ -318,15 +323,27 @@ public class GrafoND{
         return -1;
     }
 
+    public double precoAteAqui(ArrayList<Vertice> c){
+        double soma = 0;
+        ArrayList<Vertice> temp = c;
+        while(temp.size() != 0){
+            for(int i=0; i<temp.get(0).getArestas().size(); i++){
+                if(temp.contains(temp.get(0).getArestas().get(i).getA()) ||  temp.contains(temp.get(0).getArestas().get(i).getB()) ){
+                    soma += temp.get(0).getArestas().get(i).getPeso();
+                    temp.remove(0);
+                }
+            }
+        }
+        return soma;
+    }
     public double calculaFn(Vertice v, ArrayList<Vertice> c){
         for(int i=0; i<v.getArestas().size();i++){
             if(c.contains(v.getArestas().get(i).getA()) ||  c.contains(v.getArestas().get(i).getB()) ){
-                return v.getArestas().get(i).getPeso() + distanciaEstimada.get(getIndiceH(v.getDado())).getDistanciaH();
+                return (precoAteAqui(c) + v.getArestas().get(i).getPeso()) + distanciaEstimada.get(getIndiceH(v.getDado())).getDistanciaH();
             }
         }
         return -1;
     }
-
     public Vertice obtemMelhorNodo(ArrayList<Vertice> nodos, ArrayList<Vertice> caminho){
         Vertice melhor = nodos.get(0);
         double fnMelhor = calculaFn(nodos.get(0), caminho);
@@ -346,15 +363,15 @@ public class GrafoND{
         calculaH(destino);
         int indInicio = getVerticePosition(inicio);
         int indFim = getVerticePosition(destino);
-        ArrayList<Vertice> nodos = expande(vertices.get(indInicio));
         ArrayList<Vertice> caminho = new ArrayList<>();
         caminho.add(vertices.get(indInicio));
+        ArrayList<Vertice> nodos = expande(vertices.get(indInicio), caminho);
         while(nodos.size()!=0){
             Vertice melhorNodo = obtemMelhorNodo(nodos,caminho);
             caminho.add(melhorNodo);
             nodos.remove(melhorNodo);
             if(caminho.contains(vertices.get(indFim))) break;
-            ArrayList<Vertice> novosNodos = expande(melhorNodo);
+            ArrayList<Vertice> novosNodos = expande(melhorNodo,caminho);
             nodos.addAll(novosNodos);
         }
         return caminho;

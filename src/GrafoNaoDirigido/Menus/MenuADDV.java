@@ -27,7 +27,7 @@ public class MenuADDV extends JFrame {
         adciona.addActionListener(evento -> {
             if (evento.getSource() == adciona) {
                 String vertice = caixa.getText();
-                grafo.adicionaVertice(vertice);
+                grafo.adicionaVertice(vertice, 0, 0);
                 JOptionPane.showMessageDialog(null, "Vertice Adcionado!");
 
                 dispose();
