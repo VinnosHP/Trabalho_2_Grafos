@@ -18,20 +18,19 @@ public class GrafoND{
     private final ArrayList<Vertice> vertices;
     private final ArrayList<Aresta> arestas;
     private final ArrayList<String> marcados;
-    private final ArrayList<VerticeH> h;
+    private final ArrayList<VerticeH> distanciaEstimada;
 
     public GrafoND(){
         this.vertices = new ArrayList<>();
         this.arestas = new ArrayList<>();
         this.marcados = new ArrayList<>();
-        this.h = new ArrayList<>();
+        this.distanciaEstimada = new ArrayList<>();
     }
 
     public void adicionaVertice(String dado){
         Vertice novoV = new Vertice(dado);
         vertices.add(novoV);
     }
-
     public void removeVertice(String dado){
         for(int i=0; i < vertices.size(); i++){
             if(Objects.equals(vertices.get(i).getDado(), dado)){ // Procura o vertice no array
@@ -44,22 +43,20 @@ public class GrafoND{
         }
     }
 
-    public void adicionaAresta(String dadoA, String dadoB){
-        boolean existeA = existeVertice(dadoA);
-        boolean existeB = existeVertice(dadoB);
+    public void adicionaAresta(String dadoV, String dadoV1, String dadoA, double p){
+        boolean existeA = existeVertice(dadoV);
+        boolean existeB = existeVertice(dadoV1);
         if (existeA){
             if (existeB){
-                String c = dadoA.concat(dadoB);
-                Aresta a = new Aresta(c, 1.0, dadoA, dadoB);
-                Vertice v = buscaVertice(dadoA);
-                Vertice v1 = buscaVertice(dadoB);
+                Aresta a = new Aresta(dadoA, p, dadoV, dadoV1);
+                Vertice v = buscaVertice(dadoV);
+                Vertice v1 = buscaVertice(dadoV1);
                 v.adicionaAresta(a);
                 v1.adicionaAresta(a);
                 arestas.add(a);
-            }else System.out.println("Vertice " + dadoB + " não existe!");
-        }else System.out.println("Vertice " + dadoA + " não existe!");
+            }else System.out.println("Vertice " + dadoV1 + " não existe!");
+        }else System.out.println("Vertice " + dadoV + " não existe!");
     }
-
     public void removeArestaG(String id) {
         for (Vertice value : vertices) {
             for (int j = 0; j < value.getArestas().size(); j++) {
@@ -75,19 +72,6 @@ public class GrafoND{
                 }
             }
         }
-        /*
-        for(int i=0; i < arestas.size(); i++){
-            if(Objects.equals(arestas.get(i).getA(), dadoA) && Objects.equals(arestas.get(i).getB(), dadoB)){ // Procura no array a aresta
-                for (Vertice vertex : vertices) {
-                    if (Objects.equals(vertex.getDado(), dadoA) || Objects.equals(vertex.getDado(), dadoB)) { // Procura os vertices que tao ligados pela aresta
-                        vertex.removeAresta(vertex.getArestas().get()); // Remove essa aresta em cada um dos vertices
-                    }
-                }
-                arestas.remove(i); // Remove a aresta do array
-                break;
-            }
-        }
-        */
     }
 
     public boolean existeVertice(String dado){
@@ -98,11 +82,9 @@ public class GrafoND{
         }
         return false;
     }
-
     public boolean existeVerticeG(){
         return vertices.size() != 0;
     }
-
     public boolean existeAresta(String dado){
         for (Aresta vertex : arestas) {
             if (Objects.equals(vertex.getId(), dado)) {
@@ -122,7 +104,6 @@ public class GrafoND{
         }
         return vertice;
     }
-
     public Aresta buscaAresta(String dado){
         Aresta aresta = null;
         for (Aresta stringAresta : arestas) {
@@ -133,7 +114,6 @@ public class GrafoND{
         }
         return aresta;
     }
-
     public int getVerticePosition(String dado){ // A partir do dado do vertice busca qual indice ele ta na lista
         for(int i=0; i < this.vertices.size(); i++){
             if(this.vertices.get(i).getDado().equals(dado)){
@@ -168,7 +148,6 @@ public class GrafoND{
             fila.remove(0);
         }
     }
-
     public void buscaProfundidade(String dado){
         int indexInicio = getVerticePosition(dado); // chama a rotina getVerticePosition pra pegar o i do dado que nos queremos começar
         if(indexInicio == -1){
@@ -312,38 +291,75 @@ public class GrafoND{
 
     public void calculaH(String destino){
         int indexDestino = getVerticePosition(destino);
-        for (Vertice vertex : vertices) {
-            double distanciaH = (Math.abs(vertex.getX() - vertices.get(indexDestino).getX()) + Math.abs(vertex.getY() - vertices.get(indexDestino).getY()));
-            h.add(new VerticeH(vertex.getDado(), distanciaH));
+        for(int i=0; i<vertices.size(); i++){
+            double distanciaH = (Math.abs(vertices.get(i).getX() - vertices.get(indexDestino).getX()) + Math.abs(vertices.get(i).getY() - vertices.get(indexDestino).getY()));
+            distanciaEstimada.add(new VerticeH(vertices.get(i).getDado(), distanciaH));
         }
     }
-    /*
-    public Vertice obtemMelhorNodo(ArrayList<Vertice> op){
-        Vertice melhor;
-        for(int i=0; i<op.size();i++){
-            for(int j=0; j<h.size();j++){
-                if(op.get(i).getDado() == h.get(j).getDado()){
 
-                }
+    public ArrayList<Vertice> expande(Vertice v){
+        ArrayList<Vertice> adjacentes = new ArrayList<>();
+        for(int i=0; i<v.getArestas().size(); i++){
+            String adj = v.getArestas().get(i).getB();
+            if(adj == v.getDado()){
+                adj = v.getArestas().get(i).getA();
+            }
+            adjacentes.add(vertices.get(getVerticePosition(adj)));
+        }
+        return adjacentes;
+    }
+
+    public int getIndiceH(String s){
+        for(int i=0; i < this.distanciaEstimada.size(); i++){
+            if(this.distanciaEstimada.get(i).getDado().equals(s)){
+                return i;
             }
         }
+        return -1;
+    }
+
+    public double calculaFn(Vertice v, ArrayList<Vertice> c){
+        for(int i=0; i<v.getArestas().size();i++){
+            if(c.contains(v.getArestas().get(i).getA()) ||  c.contains(v.getArestas().get(i).getB()) ){
+                return v.getArestas().get(i).getPeso() + distanciaEstimada.get(getIndiceH(v.getDado())).getDistanciaH();
+            }
+        }
+        return -1;
+    }
+
+    public Vertice obtemMelhorNodo(ArrayList<Vertice> nodos, ArrayList<Vertice> caminho){
+        Vertice melhor = nodos.get(0);
+        double fnMelhor = calculaFn(nodos.get(0), caminho);
+        for(int i=0; i< nodos.size();i++){
+            double fn = calculaFn(nodos.get(i),caminho);
+            if(fn < fnMelhor){
+                fnMelhor = fn;
+                melhor = nodos.get(i);
+            }
+        }
+
         return melhor;
     }
 
     public ArrayList<Vertice> aStar(String inicio, String destino){
-            h.clear();
-            calculaH(destino);
-            ArrayList<Vertice> opcoes = new ArrayList<>();
-            ArrayList<Vertice> caminho = new ArrayList<>();
-            String atual = inicio;
-            do {
-                caminho.add(obtemMelhorNodo(opcoes));
-                if(obtemMelhorNodo(opcoes).getDado == destino)
-                    return caminho;
-
-            }while();
+        distanciaEstimada.clear();
+        calculaH(destino);
+        int indInicio = getVerticePosition(inicio);
+        int indFim = getVerticePosition(destino);
+        ArrayList<Vertice> nodos = expande(vertices.get(indInicio));
+        ArrayList<Vertice> caminho = new ArrayList<>();
+        caminho.add(vertices.get(indInicio));
+        while(nodos.size()!=0){
+            Vertice melhorNodo = obtemMelhorNodo(nodos,caminho);
+            caminho.add(melhorNodo);
+            nodos.remove(melhorNodo);
+            if(caminho.contains(vertices.get(indFim))) break;
+            ArrayList<Vertice> novosNodos = expande(melhorNodo);
+            nodos.addAll(novosNodos);
+        }
+        return caminho;
     }
-    */
+
     public void mostra(){
         for (Vertice vertex : vertices) {
             if (!vertex.getArestas().isEmpty()) {

@@ -34,7 +34,7 @@ public class MenuADDA extends JFrame{
             if (evento.getSource() == adciona) {
                 String vertice1 = caixa1.getText();
                 String vertice2 = caixa2.getText();
-                grafo.adicionaAresta(vertice1, vertice2);
+                grafo.adicionaAresta(vertice1, vertice2,"esse", 1);
                 JOptionPane.showMessageDialog(null, "Aresta Adcionada!");
                 grafo.mostra();
                 dispose();

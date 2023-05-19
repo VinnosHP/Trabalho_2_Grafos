@@ -6,6 +6,6 @@ import java.awt.*;
 
 public class TransformaFontesDosVertices implements Transformer<String,Font> {
     public Font transform(String vertice){
-        return new Font("Serif",Font.PLAIN,18);
+        return new Font("Arial",Font.BOLD,12);
     }
 }

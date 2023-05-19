@@ -7,91 +7,6 @@ import java.util.Scanner;
 import java.io.IOException;
 
 public class Main extends JFrame{
-
-    /*public Main(GrafoND grafoNO){
-        setTitle("Menu");
-        setSize(800, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        setResizable(false);
-        setLayout(null);
-
-        //Lado Esquerdo
-        JButton botaoAV = new JButton("Adicionar Vertice");
-        botaoAV.setBounds(100, 100, 300, 50);
-        botaoAV.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoAV.setForeground(new Color(0x1C1C87));
-        botaoAV.setBackground(new Color(0xFFFFFF));
-        botaoAV.addActionListener(e -> { adicionarV(grafoNO); });
-
-        JButton botaoRV = new JButton("Remover Vertice");
-        botaoRV.setBounds(100, 150, 300, 50);
-        botaoRV.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoRV.setForeground(new Color(0x1C1C87));
-        botaoRV.setBackground(new Color(0xFFFFFF));
-        botaoRV.addActionListener(e -> { removerV(grafoNO); });
-
-        JButton botaoBL = new JButton("Busca em Largura");
-        botaoBL.setBounds(100, 200, 300, 50);
-        botaoBL.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoBL.setForeground(new Color(0x1C1C87));
-        botaoBL.setBackground(new Color(0xFFFFFF));
-        botaoBL.addActionListener(e -> { buscaL(grafoNO); });
-
-        JButton botaoPRIM = new JButton("Algoritmo de PRIM");
-        botaoPRIM.setBounds(100, 250, 300, 50);
-        botaoPRIM.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoPRIM.setForeground(new Color(0x1C1C87));
-        botaoPRIM.setBackground(new Color(0xFFFFFF));
-        botaoPRIM.addActionListener(e -> { algoritmoP(grafoNO);});
-
-        //Lado Direito
-        JButton botaoAA = new JButton("Adicionar Aresta");
-        botaoAA.setBounds(400, 100, 300, 50);
-        botaoAA.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoAA.setForeground(new Color(0x1C1C87));
-        botaoAA.setBackground(new Color(0xFFFFFF));
-        botaoAA.addActionListener(e -> { adicionarA(grafoNO); });
-
-        JButton botaoRA = new JButton("Remover Aresta");
-        botaoRA.setBounds(400, 150, 300, 50);
-        botaoRA.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoRA.setForeground(new Color(0x1C1C87));
-        botaoRA.setBackground(new Color(0xFFFFFF));
-        botaoRA.addActionListener(e -> { removerA(grafoNO); });
-
-        JButton botaoBP = new JButton("Busca em Profundidade");
-        botaoBP.setBounds(400, 200, 300, 50);
-        botaoBP.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoBP.setForeground(new Color(0x1C1C87));
-        botaoBP.setBackground(new Color(0xFFFFFF));
-        botaoBP.addActionListener(e -> { buscaP(grafoNO); });
-
-        JButton botaoRoy = new JButton("Algoritmo de Roy");
-        botaoRoy.setBounds(400, 250, 300, 50);
-        botaoRoy.setFont(new Font("Arial", Font.BOLD, 21));
-        botaoRoy.setForeground(new Color(0x1C1C87));
-        botaoRoy.setBackground(new Color(0xFFFFFF));
-        botaoRoy.addActionListener(e -> {
-            System.out.println("Nada aqui ainda!");
-        });
-
-        //Sair
-        JButton sair = new JButton("Sair");
-        sair.setBounds(250,300,300,50);
-        sair.setFont(new Font("Arial", Font.BOLD, 21));
-        sair.setForeground(new Color(0x1C1C87));
-        sair.setBackground(new Color(0xFFFFFF));
-        sair.addActionListener(e -> { System.exit(0); });
-
-        add(botaoAV);add(botaoAA);
-        add(botaoRV);add(botaoRA);
-        add(botaoBL);add(botaoBP);
-        add(botaoPRIM);add(botaoRoy);
-    }*/
-
-
     public static void menu(){
         System.out.println("|----------- MENU -----------|");
         System.out.println("|  1 - Adicionar Vertice     |");
@@ -105,6 +20,7 @@ public class Main extends JFrame{
         System.out.println("|  6 - Cria Grafo            |");
         System.out.println("|  7 - PLanar                |");
         System.out.println("|  8 - Welsh Powell          |");
+        System.out.println("|  9 - A-Star                |");
         System.out.println("| -1 - Sair                  |");
         System.out.println("|----------------------------|");
         System.out.print(" Opção: ");
@@ -128,14 +44,20 @@ public class Main extends JFrame{
     }
     public static void adicionarA(GrafoND grafoNO){
         Scanner input = new Scanner(System.in);
-        String verticeA, verticeB;
+        String verticeA, verticeB, aresta;
+        double peso;
         do {
             System.out.print("Vertice 1: ");
             verticeA = input.nextLine();
             System.out.print("Vertice 2: ");
             verticeB = input.nextLine();
-        }while(Objects.equals(verticeA, "") || Objects.equals(verticeB, ""));
-        grafoNO.adicionaAresta(verticeA, verticeB);
+            System.out.print("Aresta: ");
+            aresta = input.nextLine();
+            System.out.print("Peso: ");
+            peso = input.nextDouble();
+        }while(Objects.equals(verticeA, "") || Objects.equals(verticeB, "")
+                || Objects.equals(aresta, "") || peso < 0);
+        grafoNO.adicionaAresta(verticeA, verticeB, aresta, peso);
         System.out.print("Aresta Adicionada!");
     }
     public static void removerV(GrafoND grafoNO){
@@ -223,11 +145,68 @@ public class Main extends JFrame{
         grafoND.mostra();
     }
 
+    public static void aEstrela(GrafoND grafo){
+        Scanner input = new Scanner(System.in);
+        String inicio, destino;
+        do {
+            System.out.print("Vertice destino: ");
+            destino = input.nextLine();
+            System.out.print("Vertice inicio: ");
+            inicio = input.nextLine();
+        }while(Objects.equals(destino, "") || Objects.equals(inicio, ""));
+        boolean existeD = grafo.existeVertice(destino);
+        boolean existeI = grafo.existeVertice(inicio);
+        if (existeD){
+            if (existeI){
+                System.out.println("cheguei no aEstrela if");
+                ArrayList<Vertice> caminho = grafo.aStar(inicio, destino);
+                System.out.println("cheguei no for");
+                for (Vertice vertice : caminho) {
+                    System.out.print(vertice.getDado() + " -> ");
+                }
+                System.out.print("\n");
+            }else System.out.println("Vertice " + inicio + " não existe!");
+        }else System.out.println("Vertice " + destino + " não existe!");
+
+    }
+
+    public static void inicializaParana(GrafoND grafo){
+        //Adivionando os Vertices
+        grafo.adicionaVertice("Curitiba");
+        grafo.adicionaVertice("Paranaguá");
+        grafo.adicionaVertice("Ponta Grossa");
+        grafo.adicionaVertice("Guarapuava");
+        grafo.adicionaVertice("Londrina");
+        grafo.adicionaVertice("Maringá");
+        grafo.adicionaVertice("São Mateus do Sul");
+        grafo.adicionaVertice("Umuarama");
+        grafo.adicionaVertice("Francisco Beltrão");
+        grafo.adicionaVertice("Toledo");
+        grafo.adicionaVertice("Cascavel");
+        grafo.adicionaVertice("Foz do Iguaçu");
+        //Adicionando as arestas
+        grafo.adicionaAresta("Paranaguá",         "Curitiba",         "PC",90);
+        grafo.adicionaAresta("Curitiba",          "Ponta Grossa",     "CP",114);
+        grafo.adicionaAresta("Curitiba",          "São Mateus do Sul","CS",157);
+        grafo.adicionaAresta("Ponta Grossa",      "Londrina",         "PL",273);
+        grafo.adicionaAresta("Ponta Grossa",      "Maringá",          "PM",314);
+        grafo.adicionaAresta("Ponta Grossa",      "Guarapuava",       "PG",165);
+        grafo.adicionaAresta("São Mateus do Sul", "Francisco Beltrão","SF",354);
+        grafo.adicionaAresta("Londrina",          "Maringá",          "LM",114);
+        grafo.adicionaAresta("Maringá",           "Umuarama",         "MU",190);
+        grafo.adicionaAresta("Umuarama",          "Toledo",           "UT",126);
+        grafo.adicionaAresta("Guarapuava",        "Cascavel",         "GC",250);
+        grafo.adicionaAresta("Francisco Beltrão", "Cascavel",         "FC",186);
+        grafo.adicionaAresta("Toledo",            "Cascavel",         "TC",50);
+        grafo.adicionaAresta("Cascavel",          "Foz do Iguaçu",    "CF",143);
+    }
+
     public static void main(String[] args) throws IOException {
         GrafoND grafoNO = new GrafoND();
+        GrafoND grafoP = new GrafoND();
         int opcao;
         Scanner input = new Scanner(System.in);
-        //new Main(grafoNO);
+        inicializaParana(grafoP);
         do{
             menu();
             opcao = input.nextInt();
@@ -244,6 +223,7 @@ public class Main extends JFrame{
                 case 6 -> grafoNO.visualizacao();   // comenta aqui para não aparecer o grafo
                 case 7 -> planar(grafoNO);
                 case 8 -> wp(grafoNO);
+                case 9 -> aEstrela(grafoP);
                 default -> System.out.println("Opção inválida!");
             }
             System.in.read();

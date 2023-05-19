@@ -7,6 +7,6 @@ import java.awt.geom.Ellipse2D;
 
 public class TransformaFormaDosVertices implements Transformer<String,Shape> {
     public Shape transform(String vertice){
-        return new Ellipse2D.Float(-25,-15,50,30);
+        return new Ellipse2D.Float(-60,-15,120,30);
     }
 }
