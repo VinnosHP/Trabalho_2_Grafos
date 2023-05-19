@@ -221,8 +221,8 @@ public class Main extends JFrame{
         GrafoND grafoP = new GrafoND();
         int opcao;
         Scanner input = new Scanner(System.in);
-        //inicializaParana(grafoP);
-        inicializaGQualquer(grafoP);
+        inicializaParana(grafoP);
+        //inicializaGQualquer(grafoP);
         do{
             menu();
             opcao = input.nextInt();

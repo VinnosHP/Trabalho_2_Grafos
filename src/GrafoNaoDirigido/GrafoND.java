@@ -302,7 +302,7 @@ public class GrafoND{
             double distanciaH = 100 * (Math.abs(vertex.getX() - vertices.get(indexDestino).getX()) + Math.abs(vertex.getY() - vertices.get(indexDestino).getY()));
             distanciaEstimada.add(new VerticeH(vertex.getDado(), distanciaH));
         }
-        System.out.println(distanciaEstimada.size());
+        //System.out.println(distanciaEstimada.size());
         for (VerticeH verticeH : distanciaEstimada) {
             System.out.println(verticeH.getDado() + " " + verticeH.getDistanciaH());
         }
@@ -374,7 +374,7 @@ public class GrafoND{
         ArrayList<Vertice> caminho = new ArrayList<>(); // cria a lista q vai retornar com o caminho feito
         caminho.add(inicial); // Adiciona o inicio no caminho
         ArrayList<Vertice> nodos = expande(inicial, caminho); // Adiciona na lista de opções os adjacentes do primeiro nodo
-        System.out.println(nodos.size());
+        //System.out.println(nodos.size());
         while(nodos.size()!=0){ // enquanto tiver opcoes
             Vertice melhorNodo = obtemMelhorNodo(nodos,caminho,Vdestino); // pega o melhor nodo da lista de opcoes
             caminho.add(melhorNodo); // adiciona o melhor nodo na lista do caminho
