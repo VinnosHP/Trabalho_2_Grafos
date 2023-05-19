@@ -1,6 +1,7 @@
 package GrafoNaoDirigido;
 
 import javax.swing.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
@@ -25,7 +26,6 @@ public class Main extends JFrame{
         System.out.println("|----------------------------|");
         System.out.print(" Opção: ");
     }
-
 
     public static void adicionarV(GrafoND grafoNO){
         Scanner input = new Scanner(System.in);
@@ -146,8 +146,9 @@ public class Main extends JFrame{
     }
     public static void wp(GrafoND grafoND){
         ArrayList<Vertice> lista = grafoND.WelshPowell();
-        System.out.println("wp main");
-        grafoND.mostra();
+        for (Vertice vertice : lista) {
+            System.out.println("Vertice " + vertice.getDado() + " tem a Cor: " + vertice.getCor());
+        }
     }
 
     public static void aEstrela(GrafoND grafo){
@@ -170,9 +171,19 @@ public class Main extends JFrame{
                 System.out.print("\n Custo: " + grafo.precoAteAqui(caminho) + "\n");
             }else System.out.println("Vertice " + inicio + " não existe!");
         }else System.out.println("Vertice " + destino + " não existe!");
-
     }
 
+    public static void inicializaGQualquer(GrafoND grafo){
+        grafo.adicionaVertice("A",50,50);
+        grafo.adicionaVertice("B",100,50);
+        grafo.adicionaVertice("C",100,100);
+        grafo.adicionaVertice("D",50,100);
+
+        grafo.adicionaAresta("A","B","1",1);
+        grafo.adicionaAresta("B","C","2",1);
+        grafo.adicionaAresta("C","D","3",1);
+        grafo.adicionaAresta("D","A","4",1);
+    }
     public static void inicializaParana(GrafoND grafo){
         //Adivionando os Vertices
         grafo.adicionaVertice("Curitiba",-25.4284,-49.2733);
@@ -209,7 +220,8 @@ public class Main extends JFrame{
         GrafoND grafoP = new GrafoND();
         int opcao;
         Scanner input = new Scanner(System.in);
-        inicializaParana(grafoP);
+        //inicializaParana(grafoP);
+        inicializaGQualquer(grafoP);
         do{
             menu();
             opcao = input.nextInt();
@@ -219,13 +231,15 @@ public class Main extends JFrame{
                 case 2 -> adicionarA(grafoNO);
                 case 3 -> removerV(grafoNO);
                 case 4 -> removerA(grafoNO);
-                /*case 5 -> buscaL(grafoNO);          // tem que testar para ver se ta funcionando
+                /*
+                case 5 -> buscaL(grafoNO);          // tem que testar para ver se ta funcionando
                 case 6 -> buscaP(grafoNO);          // tem que testar para ver se ta funcionando
-                case 7 -> algoritmoP(grafoNO);      // tem que testar para ver se ta funcionando*/
-                case 5 -> mostra(grafoNO);
-                case 6 -> grafoNO.visualizacao();   // comenta aqui para não aparecer o grafo
+                case 7 -> algoritmoP(grafoNO);      // tem que testar para ver se ta funcionando
+                */
+                case 5 -> mostra(grafoP);
+                case 6 -> grafoP.visualizacao();   // comenta aqui para não aparecer o grafo
                 case 7 -> planar(grafoNO);
-                case 8 -> wp(grafoNO);
+                case 8 -> wp(grafoP);
                 case 9 -> aEstrela(grafoP);
                 default -> System.out.println("Opção inválida!");
             }

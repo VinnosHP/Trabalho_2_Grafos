@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class GrafoND{
-
+    //Atributos
     private final ArrayList<Vertice> vertices;
     private final ArrayList<Aresta> arestas;
     private final ArrayList<String> marcados;
     private final ArrayList<VerticeH> distanciaEstimada;
 
+    //Construtor
     public GrafoND(){
         this.vertices = new ArrayList<>();
         this.arestas = new ArrayList<>();
@@ -27,6 +28,7 @@ public class GrafoND{
         this.distanciaEstimada = new ArrayList<>();
     }
 
+    //Vertice
     public void adicionaVertice(String dado, double x, double y){
         Vertice novoV = new Vertice(dado,x,y);
         vertices.add(novoV);
@@ -43,6 +45,7 @@ public class GrafoND{
         }
     }
 
+    //Aresta
     public void adicionaAresta(String dadoV, String dadoV1, String dadoA, double p){
         boolean existeA = existeVertice(dadoV);
         boolean existeB = existeVertice(dadoV1);
@@ -74,6 +77,7 @@ public class GrafoND{
         }
     }
 
+    //Existe
     public boolean existeVertice(String dado){
         for (Vertice vertex : vertices) {
             if (Objects.equals(vertex.getDado(), dado)) {
@@ -94,6 +98,7 @@ public class GrafoND{
         return false;
     }
 
+    //Metodos T1
     public Vertice buscaVertice(String dado){
         Vertice vertice = null;
         for (Vertice vertex : vertices) {
@@ -122,7 +127,6 @@ public class GrafoND{
         }
         return -1;
     }
-
     public void buscaLargura(String dado) { // O dado passado aqui é pra definir em qual vertice ira começar a busca
         int indexInicio = getVerticePosition(dado); // chama a rotina getVerticePosition pra pegar o i do dado que nos queremos começar
         if(indexInicio == -1){
@@ -166,7 +170,6 @@ public class GrafoND{
             }
         }
     }
-
     /*public ArrayList<Aresta> AGM(String dado){
         int indexInicio = getVerticePosition(dado); // chama a rotina getVerticePosition pra pegar o i do dado que nos queremos começar
         if(indexInicio == -1){
@@ -205,6 +208,7 @@ public class GrafoND{
         return arestasUsadas;
     }*/
 
+    //Planar
     public boolean temCicloTres(){
         for (Vertice vertex : vertices) {
             for (int j = 0; j < vertex.getArestas().size(); j++) {
@@ -241,6 +245,7 @@ public class GrafoND{
         return true;
     }
 
+    //WelshPowell
     public ArrayList<Vertice> ordenaGrau(){
         ArrayList<Vertice> listaOrdenada = vertices;
         boolean trocou = false;
@@ -289,31 +294,35 @@ public class GrafoND{
         return verticeCor;
     }
 
+    //A-Estrela
     public void calculaH(String destino){
+        distanciaEstimada.clear(); // Limpa a "tabela" H, com a distancia em linha reta
         int indexDestino = getVerticePosition(destino);
         for(int i=0; i<vertices.size(); i++){
-            double distanciaH = (Math.abs(vertices.get(i).getX() - vertices.get(indexDestino).getX()) + Math.abs(vertices.get(i).getY() - vertices.get(indexDestino).getY()));
+            double distanciaH = 100*(Math.abs(vertices.get(i).getX() - vertices.get(indexDestino).getX()) + Math.abs(vertices.get(i).getY() - vertices.get(indexDestino).getY()));
             distanciaEstimada.add(new VerticeH(vertices.get(i).getDado(), distanciaH));
         }
+        System.out.println(distanciaEstimada.size());
+        for(int i=0; i<distanciaEstimada.size();i++){
+            System.out.println(distanciaEstimada.get(i).getDado() + " " + distanciaEstimada.get(i).getDistanciaH());
+        }
     }
-
     public ArrayList<Vertice> expande(Vertice v, ArrayList<Vertice> c){
-        ArrayList<Vertice> adjacentes = new ArrayList<>();
-        for(int i=0; i<v.getArestas().size(); i++){
-            String adj = v.getArestas().get(i).getB();
-            if(Objects.equals(adj, v.getDado())){
-                adj = v.getArestas().get(i).getA();
+        ArrayList<Vertice> adjacentes = new ArrayList<>(); // Cria a lista que vai retornar
+        for(int i=0; i<v.getArestas().size(); i++){ // Para todos os adjacentes de v
+            String adj = v.getArestas().get(i).getB(); // adj recebe o fim B da aresta analisada
+            if(adj == v.getDado()){ // se esse B for o vertice de onde saiu
+                adj = v.getArestas().get(i).getA(); // pega o fim A da aresta
             }
-            adjacentes.add(vertices.get(getVerticePosition(adj)));
+            adjacentes.add(vertices.get(getVerticePosition(adj))); // adiciona o vertice adjacente na lista de adjacentes
         }
-        for(int i=0; i<adjacentes.size();i++){
-            if(c.contains(adjacentes.get(i))){
-                adjacentes.remove(i);
+        for(int i=0; i<adjacentes.size();i++){ // para todos os possiveis adjacentes
+            if(c.contains(adjacentes.get(i))){ // se eles ja foram caminhados
+                adjacentes.remove(i); // remove ele da lista
             }
         }
-        return adjacentes;
+        return adjacentes; // retorna a lista de adjacentes
     }
-
     public int getIndiceH(String s){
         for(int i=0; i < this.distanciaEstimada.size(); i++){
             if(this.distanciaEstimada.get(i).getDado().equals(s)){
@@ -322,61 +331,62 @@ public class GrafoND{
         }
         return -1;
     }
-
     public double precoAteAqui(ArrayList<Vertice> c){
-        double soma = 0;
-        ArrayList<Vertice> temp = c;
-        while(temp.size() != 0){
-            for(int i=0; i<temp.get(0).getArestas().size(); i++){
-                if(temp.contains(temp.get(0).getArestas().get(i).getA()) ||  temp.contains(temp.get(0).getArestas().get(i).getB()) ){
-                    soma += temp.get(0).getArestas().get(i).getPeso();
-                    temp.remove(0);
+        double soma = 0; // começa com 0
+        ArrayList<Vertice> temp = c; // usa o temp como uma lista temporaria
+        while(temp.size() != 0){ // enquanto tiver gente em temp
+            for(int i=0; i<temp.get(0).getArestas().size(); i++){ // pega o primeiro da lista
+                if(temp.get(1).equals(temp.get(0).getArestas().get(i).getA()) ||  temp.get(1).equals(temp.get(0).getArestas().get(i).getB()) ){ // se o proximo da lista for adjacente dele
+                    soma = soma + temp.get(0).getArestas().get(i).getPeso(); // adiciona o valor da ligação a soma
+                    temp.remove(0); // remove o primeiro da lista
                 }
             }
         }
-        return soma;
+
+        return soma; // retorna a soma
     }
     public double calculaFn(Vertice v, ArrayList<Vertice> c){
         for(int i=0; i<v.getArestas().size();i++){
-            if(c.contains(v.getArestas().get(i).getA()) ||  c.contains(v.getArestas().get(i).getB()) ){
-                return (precoAteAqui(c) + v.getArestas().get(i).getPeso()) + distanciaEstimada.get(getIndiceH(v.getDado())).getDistanciaH();
+            if(c.get(c.size()-1).equals(v.getArestas().get(i).getA()) ||  c.get(c.size()-1).equals(v.getArestas().get(i).getB()) ){ // se ele tem ligação com o ultimo adicionado
+                return (precoAteAqui(c) + v.getArestas().get(i).getPeso()) + distanciaEstimada.get(getIndiceH(v.getDado())).getDistanciaH(); // retorna o f(n) dele
             }
         }
-        return -1;
+        return 99999999; // se nao tem retorna um valor altissimo pra descartar
     }
-    public Vertice obtemMelhorNodo(ArrayList<Vertice> nodos, ArrayList<Vertice> caminho){
-        Vertice melhor = nodos.get(0);
-        double fnMelhor = calculaFn(nodos.get(0), caminho);
-        for(int i=0; i< nodos.size();i++){
-            double fn = calculaFn(nodos.get(i),caminho);
-            if(fn < fnMelhor){
-                fnMelhor = fn;
-                melhor = nodos.get(i);
+    public Vertice obtemMelhorNodo(ArrayList<Vertice> nodos, ArrayList<Vertice> caminho,Vertice destino){
+        Vertice melhor = nodos.get(0); // O melhor inicialmente eh a primeira opcao
+        double fnMelhor = calculaFn(nodos.get(0), caminho); // calcula o f(n)
+        for(int i=0; i < nodos.size();i++){ // para todas as opcoes
+            if(nodos.get(i).getArestas().size() > 1 || destino.equals(nodos.get(i))) { // Se o vertice tiver mais caminho pela frente, ou for o destino
+                double fn = calculaFn(nodos.get(i), caminho); // pega o f(n) do nodo atual
+                if (fn < fnMelhor) { // se o novo for mais barato que o melhor
+                    fnMelhor = fn; // o novo melhor eh o atual
+                    melhor = nodos.get(i); // o melhor vertice eh o atual
+                }
             }
         }
-
-        return melhor;
+        return melhor; // retorna o melhor
     }
-
     public ArrayList<Vertice> aStar(String inicio, String destino){
-        distanciaEstimada.clear();
-        calculaH(destino);
-        int indInicio = getVerticePosition(inicio);
-        int indFim = getVerticePosition(destino);
-        ArrayList<Vertice> caminho = new ArrayList<>();
-        caminho.add(vertices.get(indInicio));
-        ArrayList<Vertice> nodos = expande(vertices.get(indInicio), caminho);
-        while(nodos.size()!=0){
-            Vertice melhorNodo = obtemMelhorNodo(nodos,caminho);
-            caminho.add(melhorNodo);
-            nodos.remove(melhorNodo);
-            if(caminho.contains(vertices.get(indFim))) break;
-            ArrayList<Vertice> novosNodos = expande(melhorNodo,caminho);
-            nodos.addAll(novosNodos);
+        calculaH(destino); // calcula baseada em quem eh o destino
+        Vertice inicial = vertices.get(getVerticePosition(inicio)); // guarda vertice inicial
+        Vertice Vdestino = vertices.get(getVerticePosition(destino)); // guarda o vertice final
+        ArrayList<Vertice> caminho = new ArrayList<>(); // cria a lista q vai retornar com o caminho feito
+        caminho.add(inicial); // Adiciona o inicio no caminho
+        ArrayList<Vertice> nodos = expande(inicial, caminho); // Adiciona na lista de opções os adjacentes do primeiro nodo
+        System.out.println(nodos.size());
+        while(nodos.size()!=0){ // enquanto tiver opcoes
+            Vertice melhorNodo = obtemMelhorNodo(nodos,caminho,Vdestino); // pega o melhor nodo da lista de opcoes
+            caminho.add(melhorNodo); // adiciona o melhor nodo na lista do caminho
+            nodos.remove(melhorNodo); // remove o melhor nodo das opcoes
+            if(caminho.contains(Vdestino)) break; // se ja achou o destino para o loop
+            ArrayList<Vertice> novosNodos = expande(melhorNodo,caminho); // adiciona as opcoes os adjacentes do nodo escolhido
+            nodos = novosNodos;
         }
-        return caminho;
+        return caminho; // retorna a lista com o caminho
     }
 
+    //Mostra o Grafo
     public void mostra(){
         for (Vertice vertex : vertices) {
             if (!vertex.getArestas().isEmpty()) {
@@ -427,7 +437,8 @@ public class GrafoND{
             ctx.setVertexStrokeTransformer(new TransformaLinhasDosVertices());
             ctx.setVertexFillPaintTransformer(new TransformaPreenchimentoDosVertices());
             ctx.setVertexDrawPaintTransformer(new TransformaCorDasLinhasDosVertices());
-            ctx.setVertexDrawPaintTransformer(new TransformaCorDasLinhasDasArestas());
+            ctx.setVertexDrawPaintTransformer(new TransformaCorDasLinhasDosVertices());
+            ctx.setEdgeDrawPaintTransformer(new TransformaCorDasLinhasDasArestas());
 
             Renderer.VertexLabel<String, String> vl = componente.getRenderer().getVertexLabelRenderer();
             vl.setPosition(Renderer.VertexLabel.Position.CNTR);
